@@ -1,47 +1,129 @@
 <!DOCTYPE html>
-<html>
-<head>
-<title>Vehicle ML Dashboard</title>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<style>
-body {
-background-color: #f4f6f9;
-}
-.scrollspy-example {
-height: 80vh;
-overflow-y: scroll;
-position: relative;
-}
-.nav-pills .nav-link.active {
-background-color: #0d6efd;
-}
-</style>
-</head>
-<body data-bs-spy="scroll" data-bs-target="#dashboard-nav" data-bs-offset="100" tabindex="0">
-<div class="container-fluid mt-4">
-<div class="row">
-<!-- Sidebar Navigation -->
-<div class="col-md-3">
-<div id="dashboard-nav" class="list-group position-sticky top-0">
-<a class="list-group-item list-group-item-action" href="#frequency-table">Frequency Tables (One-way)</a>
-</div>
-</div>
-<!-- Scrollable Content -->
-<div class="col-md-9">
-<div class="scrollspy-example" data-bs-spy="scroll" data-bs-target="#dashboard-nav" data-bs-smooth-scroll="true" tabindex="0">
-<h1 class="text-center text-primary mb-4"> Vehicle Machine Learning Dashboard </h1>
-<div id="frequency-table" class="card shadow mb-5">
-<div class="card-header bg-info text-white">
-Frequency Tables (One-way)
-</div>
-<div class="card-body">
-{{ frequency_table|safe }}
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Vehicle ML Dashboard</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        background-color: #f4f6f9;
+      }
+
+      .scrollspy-example {
+        min-height: 80vh;
+      }
+
+      .table-container {
+        overflow-x: auto;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container-fluid mt-4">
+      <h1 class="text-center text-primary mb-4">
+        Vehicle Machine Learning Dashboard
+      </h1>
+
+      <div class="container">
+        <!-- Table selection buttons -->
+        <div class="d-flex flex-wrap gap-2 mb-4">
+          <button
+            class="btn btn-primary"
+            id="allBtn"
+            onclick="showTable('all')"
+          >
+            All Vehicles
+          </button>
+
+          <button
+            class="btn btn-outline-primary"
+            id="filteredBtn"
+            onclick="showTable('filtered')"
+          >
+            Vehicles Above 5000
+          </button>
+
+          <button
+            class="btn btn-outline-primary"
+            id="salesBtn"
+            onclick="showTable('sales')"
+          >
+            Manufacturer & Transmission Sales
+          </button>
+        </div>
+
+        <!-- First table: full dataset -->
+        <div class="card shadow mb-4" id="allTable">
+          <div class="card-header bg-primary text-white">
+            Manufacturer Frequency — All Vehicles
+          </div>
+
+          <div class="card-body table-container">
+            {{ frequency_table|safe }}
+          </div>
+        </div>
+
+        <!-- Second table: filtered dataset -->
+
+        <div class="card shadow mb-4 d-none" id="filteredTable">
+          <div class="card-header bg-info text-white">
+            Manufacturer Frequency — Selling Price Above 5000
+          </div>
+
+          <div class="card-body">
+            <p>
+              Vehicles with selling price above 5000:
+              <strong>{{ filtered_total }}</strong>
+            </p>
+
+            <div class="table-container">
+              {{ frequency_table_filtered|safe }}
+            </div>
+          </div>
+        </div>
+
+        <div class="card shadow mb-4 d-none" id="salesTable">
+          <div class="card-header bg-success text-white">
+            Total Selling Price by Manufacturer & Transmission
+          </div>
+
+          <div class="card-body table-container">
+            {{ manufacturer_transmission_sales|safe }}
+          </div>
+        </div>
+
+        <div class="table-container">{{ grouped_vehicle_table|safe }}</div>
+      </div>
+    </div>
+
+    <script>
+      function showTable(type) {
+        const allTable = document.getElementById("allTable");
+        const filteredTable = document.getElementById("filteredTable");
+        const allBtn = document.getElementById("allBtn");
+        const filteredBtn = document.getElementById("filteredBtn");
+
+        if (type === "all") {
+          allTable.classList.remove("d-none");
+          filteredTable.classList.add("d-none");
+
+          allBtn.className = "btn btn-primary";
+          filteredBtn.className = "btn btn-outline-primary";
+        } else {
+          allTable.classList.add("d-none");
+          filteredTable.classList.remove("d-none");
+
+          allBtn.className = "btn btn-outline-primary";
+          filteredBtn.className = "btn btn-primary";
+        }
+      }
+    </script>
+  </body>
 </html>
