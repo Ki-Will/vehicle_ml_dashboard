@@ -57,9 +57,17 @@
           >
             Manufacturer & Transmission Sales
           </button>
+
+          <button
+            class="btn btn-outline-primary"
+            id="aggregationBtn"
+            onclick="showTable('aggregation')"
+          >
+            Price Aggregation
+          </button>
         </div>
 
-        <!-- First table: full dataset -->
+        <!-- First table: existing implementation -->
         <div class="card shadow mb-4" id="allTable">
           <div class="card-header bg-primary text-white">
             Manufacturer Frequency — All Vehicles
@@ -70,8 +78,7 @@
           </div>
         </div>
 
-        <!-- Second table: filtered dataset -->
-
+        <!-- Second table: existing implementation -->
         <div class="card shadow mb-4 d-none" id="filteredTable">
           <div class="card-header bg-info text-white">
             Manufacturer Frequency — Selling Price Above 5000
@@ -89,6 +96,7 @@
           </div>
         </div>
 
+        <!-- Third table: existing manufacturer/transmission aggregation -->
         <div class="card shadow mb-4 d-none" id="salesTable">
           <div class="card-header bg-success text-white">
             Total Selling Price by Manufacturer & Transmission
@@ -99,30 +107,43 @@
           </div>
         </div>
 
-        <div class="table-container">{{ grouped_vehicle_table|safe }}</div>
+        <!-- Fourth table: new hierarchical price aggregation -->
+        <div class="card shadow mb-4 d-none" id="aggregationTable">
+          <div class="card-header bg-warning text-dark">
+            Price Aggregation by Manufacturer, Transmission, Body Type & Fuel Type
+          </div>
+
+          <div class="card-body table-container">
+            {{ grouped_vehicle_table|safe }}
+          </div>
+        </div>
       </div>
     </div>
 
     <script>
       function showTable(type) {
-        const allTable = document.getElementById("allTable");
-        const filteredTable = document.getElementById("filteredTable");
-        const allBtn = document.getElementById("allBtn");
-        const filteredBtn = document.getElementById("filteredBtn");
+        const tables = {
+          all: document.getElementById("allTable"),
+          filtered: document.getElementById("filteredTable"),
+          sales: document.getElementById("salesTable"),
+          aggregation: document.getElementById("aggregationTable"),
+        };
 
-        if (type === "all") {
-          allTable.classList.remove("d-none");
-          filteredTable.classList.add("d-none");
+        const buttons = {
+          all: document.getElementById("allBtn"),
+          filtered: document.getElementById("filteredBtn"),
+          sales: document.getElementById("salesBtn"),
+          aggregation: document.getElementById("aggregationBtn"),
+        };
 
-          allBtn.className = "btn btn-primary";
-          filteredBtn.className = "btn btn-outline-primary";
-        } else {
-          allTable.classList.add("d-none");
-          filteredTable.classList.remove("d-none");
+        Object.entries(tables).forEach(([key, table]) => {
+          table.classList.toggle("d-none", key !== type);
+        });
 
-          allBtn.className = "btn btn-outline-primary";
-          filteredBtn.className = "btn btn-primary";
-        }
+        Object.entries(buttons).forEach(([key, button]) => {
+          button.className =
+            key === type ? "btn btn-primary" : "btn btn-outline-primary";
+        });
       }
     </script>
   </body>
